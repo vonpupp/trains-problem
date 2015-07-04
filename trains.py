@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
 """Thoughtworks results for problem one: Trains
 
 Problem description:
@@ -65,40 +65,50 @@ Output #10: 7
 
 
 Comments from Albert:
-> Description:
-> - I represented each city as a vertex of a weighted graph, where the weight is
-> the "track" of "one-way" connecting each city.
-> For such abstraction I used a dict of dicts. Given the example data:
-> "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7" can be represented as follows:
->    graph = {'a': {'b': 5, 'd': 5, 'e': 7},
->             'b': {'c': 4},
->             'c': {'d': 8, 'e': 2},
->             'd': {'c': 8, 'e': 6},
->             'e': {'b': 3}
-> - I performed a search using a Breadth-First Search (BFS)  algorithm [1]
-> packed within an iterator yielding a path at a time.
-> [1]: https://en.wikipedia.org/wiki/Breadth-first_search
-> - Perhaps using Depth-First Search (DFS) would produce a more elegant
-> solution, specially for the last type of problems, specially if the order of
-> the paths matter. I will assume that it doesn't matter and therefore use BFS
-> as well to not repeat myself.
->
->
-> Assumptions:
-> - I used the Queue and heapq modules. I don't think this break the rules
-> since is part of the standard python library. By external libs I understand
-> pip libs.
-> I priorized readability over efficience since time/efficiency is not a
-> constraint of the problem. Performance improvements can be done to this code.
-> - Since the graph has loops to implement the last type of feature the
-> algorithm could be caugh in a loop as in fact happens when not limited to a
-> number of iterations. Therefore a max_iterations parameter has been added.
->
->
-> Code checkups:
-> - PEP8 compliant
-> - Doctest passing
-> - Pytest passing
+---------------------
+Description:
+- I represented each city as a vertex of a weighted graph, where the weight is
+  the "track" of "one-way" connecting each city.
+  For such abstraction I used a dict of dicts. Given the example data:
+  "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7" can be represented as follows:
+     graph = {'a': {'b': 5, 'd': 5, 'e': 7},
+              'b': {'c': 4},
+              'c': {'d': 8, 'e': 2},
+              'd': {'c': 8, 'e': 6},
+              'e': {'b': 3}
+- I performed a search using a Breadth-First Search (BFS)  algorithm [1]
+  packed within an iterator yielding a path at a time.
+  [1]: https://en.wikipedia.org/wiki/Breadth-first_search
+- The error messages strings such as "NO SUCH ROUTE", are handled by function
+  wrappers on the main code. I don't like to bind user messages to methods. The
+  methods should return only data or exceptions while the main would behave as
+  "user's" code which would handle the messages. I could have done some sort of
+  facade class on the main but I thought it was just overkilling.
+- I added an error handler for "NO SUCH ROUTE" while getting the shortest path
+  on non existing routes. This is not taken into account on the given
+  description
+- It is possible that there are some missing error handlers. However it is not
+  clear how you intend to test this code, and therefore I found this deliverable
+  to meet a good balance of error handling.
+- I thought of using properties for the classes but it didn't look worthing of
+  doing it for this example.
+
+
+Assumptions:
+- I used the Queue and heapq modules. I don't think this break the rules
+  since is part of the standard python library. By external libs I understand
+  pip libs.
+  I priorized readability over efficiency since time/efficiency is not a
+  constraint of the problem. Performance improvements can be done to this code.
+- Since the graph has loops to implement the last type of feature the
+  algorithm could enter a loop as in fact happens when not limited to a
+  number of iterations. Therefore a max_iterations parameter has been added.
+
+
+Code checkups:
+- PEP8 compliant
+- Doctest passing
+- Pytest passing
 """
 
 import Queue
@@ -192,24 +202,41 @@ class TrainsProblem:
     def bfs_iterator(self, start, end, q):
         """
         Returns a BFS iterator performing a Breadth-First Search (BFS)
-        algorithm [1]
+        algorithm [1] from start to end using a queue.
 
-        Atributes:
+        Attributes:
             start (str): The starting vertex
             end (str): The ending vertex
             q (Queue): The queue used to process the nodes
         [1]: https://en.wikipedia.org/wiki/Breadth-first_search
+        >>> graph = {'A': {'B': 5, 'D': 5, 'E': 7},
+        ...  'B': {'C': 4},
+        ...  'C': {'D': 8, 'E': 2},
+        ...  'D': {'C': 8, 'E': 6},
+        ...  'E': {'B': 3}
+        ... }
+        >>> trains = TrainsProblem()
+        >>> trains.graph = graph
+        >>> q = Queue.Queue()
+        >>> i = trains.bfs_iterator('C', 'C', q)
+        >>> i.next()
+        ['C']
+        >>> i.next()
+        ['C', 'D', 'C']
+        >>> i.next()
+        ['C', 'E', 'B', 'C']
         """
         temp_path = [start]
         q.put(temp_path)
         while not q.empty():
-            tmp_path = q.get()
-            last_node = tmp_path[len(tmp_path)-1]
-            if tmp_path[len(tmp_path)-1] == end:
-                yield tmp_path
+            last_path = q.get()
+            last_node = last_path[len(last_path)-1]
+            if last_path[len(last_path)-1] == end:
+                #import ipdb; ipdb.set_trace() # BREAKPOINT
+                yield last_path
             for link_node in self.graph[last_node]:
                 new_path = []
-                new_path = tmp_path + [link_node]
+                new_path = last_path + [link_node]
                 q.put(new_path)
 
     def paths_by_maximum_stops(self, start, end, max_stops):
@@ -219,7 +246,7 @@ class TrainsProblem:
             max_stops does not count the origin vertex (path C-D-C is 2 stops)
             No loops allowed (see description)
 
-        Atributes:
+        Attributes:
             start (str): The starting vertex
             end (str): The ending vertex
             max_stops (int): The maximum number of stops
@@ -259,7 +286,7 @@ class TrainsProblem:
             max_stops does not count the origin vertex (path C-D-C is 2 stops)
             No loops allowed (see description)
 
-        Atributes:
+        Attributes:
             start (str): The starting vertex
             end (str): The ending vertex
             max_stops (int): The maximum number of stops
@@ -280,9 +307,9 @@ class TrainsProblem:
     def paths_by_exact_stops(self, start, end, stops_number):
         """
         Calculates the paths between start and end vertices in exactly
-        stops_number stesp.
+        stops_number steps.
 
-        Atributes:
+        Attributes:
             start (str): The starting vertex
             end (str): The ending vertex
             stops_number (int): The exact number of stops
@@ -316,7 +343,7 @@ class TrainsProblem:
         Calculates the number of paths between start and end vertices in exactly
         stops_number stesp.
 
-        Atributes:
+        Attributes:
             start (str): The starting vertex
             end (str): The ending vertex
             stops_number (int): The exact number of stops
@@ -340,7 +367,7 @@ class TrainsProblem:
         Calculates the paths between start and in maximum max_distance steps and
         in maximum max_iterations iterations (since the graph may contain loops)
 
-        Atributes:
+        Attributes:
             start (str): The starting vertex
             end (str): The ending vertex
             max_distance (int): The maximum distance
@@ -379,7 +406,7 @@ class TrainsProblem:
         max_distance steps and in maximum max_iterations iterations (since the
         graph may contain loops)
 
-        Atributes:
+        Attributes:
             start (str): The starting vertex
             end (str): The ending vertex
             max_distance (int): The maximum distance
@@ -399,12 +426,12 @@ class TrainsProblem:
         return len(self.paths_by_maximum_distance(start, end, max_distance,
                    max_iterations))
 
-    def heap_shortest_path(self, start, end):
+    def shortest_path(self, start, end):
         """
         Find the shortest path between start and end nodes in a graph using
         heaps
 
-        Atributes:
+        Attributes:
             start (str): The starting vertex
             end (str): The ending vertex
 
@@ -419,41 +446,75 @@ class TrainsProblem:
         >>> trains.paths_by_maximum_distance('C', 'C', 30, 30)
         [['C', 'D', 'C'], ['C', 'E', 'B', 'C'], ['C', 'D', 'E', 'B', 'C'], ['C', 'E', 'B', 'C', 'D', 'C'], ['C', 'D', 'C', 'E', 'B', 'C'], ['C', 'E', 'B', 'C', 'E', 'B', 'C'], ['C', 'E', 'B', 'C', 'E', 'B', 'C', 'E', 'B', 'C']]
         """
-        queue = [(0, start, [])]
-        seen = set()
-        while True:
-            (cost, v, path) = heapq.heappop(queue)
-            if v not in seen:
-                path = path + [v]
-                seen.add(v)
-                for (next, c) in self.graph[v].iteritems():
-                    heapq.heappush(queue, (cost + c, next, path))
-            if v == end and cost != 0:
-                return path, cost
+        try:
+            path = []
+            distance = 0
+            queue = [(0, start, [])]
+            seen = set()
+            while True:
+                (distance, vertex, path) = heapq.heappop(queue)
+                if vertex not in seen:
+                    path = path + [vertex]
+                    seen.add(vertex)
+                    for (next, last_distance) in self.graph[vertex].iteritems():
+                        heapq.heappush(queue, (distance + last_distance, next,
+                                               path))
+                if vertex == end and distance != 0:
+                    return path, distance
+        except:
+            raise NoRoute('No route from {} to {}'.format(start, end), 2)
 
 
 def main():
-    graph = {'A': {'B': 5, 'D': 5, 'E': 7},
-             'B': {'C': 4},
-             'C': {'D': 8, 'E': 2},
-             'D': {'C': 8, 'E': 6},
-             'E': {'B': 3}
-             }
+    def path_distance_error_handler(trains, path):
+        """
+        Handle user messages when calculating distances on a path.
+        I personally do not like mixing user messages within a library or a
+        class. That should be a responsibility of the main code
+
+        Attributes:
+            trains (TrainsProblem): The TrainsProblem object
+            path (list): The list of vertices
+        """
+        try:
+            path = trains.path_distance(path)
+        except:
+            path = 'NO SUCH ROUTE'
+        return path
+
+    def shortest_path_error_handler(trains, start, end):
+        """
+        Handle user messages when calculating the shortest path between two
+        vertices
+
+        Attributes:
+            trains (TrainsProblem): The TrainsProblem object
+            start (str): The starting vertex
+            end (str): The ending vertex
+        """
+        try:
+            _, result = trains.shortest_path(start, end)
+        except:
+            result = 'NO SUCH ROUTE'
+        return result
+
     trains = TrainsProblem()
     trains.create_graph_from_string('AB5, BC4, CD8, DC8, DE6,\
-                                    AD5, CE2, EB3, AE7')
+                                     AD5, CE2, EB3, AE7')
 
-    print('Output #1: {}'.format(trains.path_distance(['A', 'B', 'C'])))
-    print('Output #2: {}'.format(trains.path_distance(['A', 'D'])))
-    print('Output #3: {}'.format(trains.path_distance(['A', 'D', 'C'])))
-    print('Output #4: {}'
-          .format(trains.path_distance(['A', 'E', 'B', 'C', 'D'])))
+    path = path_distance_error_handler(trains, ['A', 'B', 'C'])
+    print('Output #1: {}'.format(path))
 
-    try:
-        path = trains.path_distance(graph, ['a', 'e', 'd'])
-    except:
-        path = 'NO SUCH ROUTE'
+    path = path_distance_error_handler(trains, ['A', 'D'])
+    print('Output #2: {}'.format(path))
 
+    path = path_distance_error_handler(trains, ['A', 'D', 'C'])
+    print('Output #3: {}'.format(path))
+
+    path = path_distance_error_handler(trains, ['A', 'E', 'B', 'C', 'D'])
+    print('Output #4: {}'.format(path))
+
+    path = path_distance_error_handler(trains, ['A', 'E', 'D'])
     print('Output #5: {}'.format(path))
 
     count = trains.paths_number_by_maximum_stops('C', 'C', 3)
@@ -462,11 +523,11 @@ def main():
     count = trains.paths_number_by_exact_stops('A', 'C', 4)
     print('Output #7: {}'.format(count))
 
-    path, weight = trains.heap_shortest_path('A', 'C')
-    print('Output #8: {}'.format(weight))
+    result = shortest_path_error_handler(trains, 'A', 'C')
+    print('Output #8: {}'.format(result))
 
-    path, weight = trains.heap_shortest_path('B', 'B')
-    print('Output #9: {}'.format(weight))
+    result = shortest_path_error_handler(trains, 'B', 'B')
+    print('Output #9: {}'.format(result))
 
     iterations = 50
     count = trains.paths_number_by_maximum_distance('C', 'C', 30, iterations)
@@ -476,3 +537,5 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod()
     main()
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4 spelllang=en_us :

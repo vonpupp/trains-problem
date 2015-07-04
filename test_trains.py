@@ -31,6 +31,7 @@ class TestTrains():
         assert g == tp.graph
 
     def test_doctest(self):
+        # TODO: Perform doctesting within py.test
         doctest.testmod(trains)
 
     def test_output01(self):
@@ -64,12 +65,16 @@ class TestTrains():
         count = self.tp.paths_number_by_exact_stops('A', 'C', 4)
         assert count == 3
 
-    def test_output08(self):
-        path, weight = self.tp.heap_shortest_path('A', 'C')
+    def test_output08_normal_flow(self):
+        path, weight = self.tp.shortest_path('A', 'C')
         assert 9 == weight
 
+    def test_output08_no_route(self):
+        with pytest.raises(trains.NoRoute):
+            path, weight = self.tp.shortest_path('A', 'A')
+
     def test_output09(self):
-        path, weight = self.tp.heap_shortest_path('B', 'B')
+        path, weight = self.tp.shortest_path('B', 'B')
         assert 9 == weight
         assert len(path) > 1
 
