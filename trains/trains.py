@@ -181,8 +181,9 @@ class NoRoute(Exception):
 
 
 class TrainsProblem:
+    #TODO: Document the class and the constructor
     def __init__(self):
-        self.graph = {}
+        self.__graph = {}
 
     def create_graph_from_string(self, string):
         """
