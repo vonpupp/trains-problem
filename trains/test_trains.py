@@ -18,6 +18,8 @@ class TestTrains():
         self.tp = trains.TrainsProblem()
         self.tp.graph = self.graph
 
+    # Unit tests
+
     def test_input_mapping(self):
         g = {'A': {'B': 5, 'D': 5, 'E': 7},
              'B': {'C': 4},
@@ -89,3 +91,15 @@ class TestTrains():
         assert ['C', 'E', 'B', 'C', 'E', 'B', 'C'] in paths
         assert ['C', 'E', 'B', 'C', 'E', 'B', 'C', 'E', 'B', 'C'] in paths
         assert len(paths) == 7
+
+# Functional tests
+# Note this is not within the class since is a fixture
+
+@pytest.mark.parametrize(("filename_expected", "function_to_test"), [
+    ("expected_output.txt", trains.main)
+])
+def test_funcoutput(capfd, filename_expected, function_to_test):
+    function_to_test()
+    resout, reserr = capfd.readouterr()
+    expected = open(filename_expected, "r").read()
+    assert resout == expected

@@ -64,9 +64,13 @@ Output #9: 9
 Output #10: 7
 
 
+---------------------
 Comments from Albert:
 ---------------------
-Description:
+
+
+Code description:
+---------------------
 - I represented each city as a vertex of a weighted graph, where the weight is
   the "track" of "one-way" connecting each city.
   For such abstraction I used a dict of dicts. Given the example data:
@@ -95,6 +99,7 @@ Description:
 
 
 Assumptions:
+---------------------
 - I used the Queue and heapq modules. I don't think this break the rules
   since is part of the standard python library. By external libs I understand
   pip libs.
@@ -103,12 +108,56 @@ Assumptions:
 - Since the graph has loops to implement the last type of feature the
   algorithm could enter a loop as in fact happens when not limited to a
   number of iterations. Therefore a max_iterations parameter has been added.
+- The input is read from input.txt. Only the FIRST line is considered as input,
+  the rest of the file is silently ignored. I assumed that the prefix "Graph:"
+  is not part of the input. It wasn't clear for me from the description if it
+  should have been considered or not.
+- The output is written on stdout (the console). It wasn't clear for me from the
+  description if I had to write to an output file, if it is the case then just
+  run the code as: ``./trains.py | tee output.txt``.
+- I made the program in Linux, I haven't tried it out on Windows, it should work
+  out of the box, but I haven't tried it out
+- I used pytest for testing instead of the regular testing framework. I feel
+  pytest more pythonic
+- This is made in python2 and it should run in python2, I haven't tested it out
+  on python3
 
 
 Code checkups:
-- PEP8 compliant
+---------------------
+- PEP8 compliant (except for some oneline docstrings outputs)
 - Doctest passing
-- Pytest passing
+- Pytest passing (unit + functional tests)
+
+
+How to prepare the environment (pre-requisite to run the code). Assuming python2
+and archlinux:
+---------------------
+- Unzip
+    ``unzip trains.zip``
+- Change directory
+    ``cd trains``
+- Create the environment:
+    ``virtualenv2 .env``
+- Activate the environment if not active:
+    ``source .env/bin/activate``
+- Install py.test:
+    ``pip2 install -r requirements.txt``
+
+Note: Depending on your distro you may use virtualenv instead of virtualenv2 and
+pip instead of pip2. I assume archlinux which is the distro I'm using and
+python2.
+
+
+How to run this code:
+---------------------
+- Edit the input.txt file and write a valid graph. Example:
+  AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7
+- Execute the program at the prompt (assuming Linux)
+    * Option 1. Output on stdout:
+        ``./trains.py``
+    * Option 2. Output on stdout + file:
+        ``./trains.py | tee output.txt``
 """
 
 import Queue
@@ -232,7 +281,6 @@ class TrainsProblem:
             last_path = q.get()
             last_node = last_path[len(last_path)-1]
             if last_path[len(last_path)-1] == end:
-                #import ipdb; ipdb.set_trace() # BREAKPOINT
                 yield last_path
             for link_node in self.graph[last_node]:
                 new_path = []
@@ -498,9 +546,19 @@ def main():
             result = 'NO SUCH ROUTE'
         return result
 
+    def read_input(filename):
+        try:
+            input = ''
+            with open(filename) as f:
+                input = f.readline()
+            return str(input)
+        except:
+            print('Problem reading input, check that input.txt exists\
+                   and it is formated correctly as the problem description')
+
+    input_string = read_input('input.txt')
     trains = TrainsProblem()
-    trains.create_graph_from_string('AB5, BC4, CD8, DC8, DE6,\
-                                     AD5, CE2, EB3, AE7')
+    trains.create_graph_from_string(input_string)
 
     path = path_distance_error_handler(trains, ['A', 'B', 'C'])
     print('Output #1: {}'.format(path))
