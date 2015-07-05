@@ -63,101 +63,9 @@ Output #8: 9
 Output #9: 9
 Output #10: 7
 
+------------------------------------------------------------------------------
 
----------------------
-Comments from Albert:
----------------------
-
-
-Code description:
----------------------
-- I represented each city as a vertex of a weighted graph, where the weight is
-  the "track" of "one-way" connecting each city.
-  For such abstraction I used a dict of dicts. Given the example data:
-  "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7" can be represented as follows:
-     graph = {'a': {'b': 5, 'd': 5, 'e': 7},
-              'b': {'c': 4},
-              'c': {'d': 8, 'e': 2},
-              'd': {'c': 8, 'e': 6},
-              'e': {'b': 3}
-- I performed a search using a Breadth-First Search (BFS)  algorithm [1]
-  packed within an iterator yielding a path at a time.
-  [1]: https://en.wikipedia.org/wiki/Breadth-first_search
-- The error messages strings such as "NO SUCH ROUTE", are handled by function
-  wrappers on the main code. I don't like to bind user messages to methods. The
-  methods should return only data or exceptions while the main would behave as
-  "user's" code which would handle the messages. I could have done some sort of
-  facade class on the main but I thought it was just overkilling.
-- I added an error handler for "NO SUCH ROUTE" while getting the shortest path
-  on non existing routes. This is not taken into account on the given
-  description
-- It is possible that there are some missing error handlers. However it is not
-  clear how you intend to test this code, and therefore I found this deliverable
-  to meet a good balance of error handling.
-- I thought of using properties for the classes but it didn't look worthing of
-  doing it for this example.
-
-
-Assumptions:
----------------------
-- I used the Queue and heapq modules. I don't think this break the rules
-  since is part of the standard python library. By external libs I understand
-  pip libs.
-  I priorized readability over efficiency since time/efficiency is not a
-  constraint of the problem. Performance improvements can be done to this code.
-- Since the graph has loops to implement the last type of feature the
-  algorithm could enter a loop as in fact happens when not limited to a
-  number of iterations. Therefore a max_iterations parameter has been added.
-- The input is read from input.txt. Only the FIRST line is considered as input,
-  the rest of the file is silently ignored. I assumed that the prefix "Graph:"
-  is not part of the input. It wasn't clear for me from the description if it
-  should have been considered or not.
-- The output is written on stdout (the console). It wasn't clear for me from the
-  description if I had to write to an output file, if it is the case then just
-  run the code as: ``./trains.py | tee output.txt``.
-- I made the program in Linux, I haven't tried it out on Windows, it should work
-  out of the box, but I haven't tried it out
-- I used pytest for testing instead of the regular testing framework. I feel
-  pytest more pythonic
-- This is made in python2 and it should run in python2, I haven't tested it out
-  on python3
-
-
-Code checkups:
----------------------
-- PEP8 compliant (except for some oneline docstrings outputs)
-- Doctest passing
-- Pytest passing (unit + functional tests)
-
-
-How to prepare the environment (pre-requisite to run the code). Assuming python2
-and archlinux:
----------------------
-- Unzip
-    ``unzip trains.zip``
-- Change directory
-    ``cd trains``
-- Create the environment:
-    ``virtualenv2 .env``
-- Activate the environment if not active:
-    ``source .env/bin/activate``
-- Install py.test:
-    ``pip2 install -r requirements.txt``
-
-Note: Depending on your distro you may use virtualenv instead of virtualenv2 and
-pip instead of pip2. I assume archlinux which is the distro I'm using and
-python2.
-
-
-How to run this code:
----------------------
-- Edit the input.txt file and write a valid graph. Example:
-  AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7
-- Execute the program at the prompt (assuming Linux)
-    * Option 1. Output on stdout:
-        ``./trains.py``
-    * Option 2. Output on stdout + file:
-        ``./trains.py | tee output.txt``
+See the README.md that is shiped with this code.
 """
 
 import Queue
@@ -170,13 +78,15 @@ class NoRoute(Exception):
 
     Used when there is no way to calculate a distance on a non
     existing route like A-E-D.
-
-    Params:
-        msg (str): Human readable string describing the exception.
-        code (int): Exception error code.
-
     """
     def __init__(self, msg, code):
+        """
+        Creates a NoRoute exception.
+
+        Params:
+            msg (str): Human readable string describing the exception.
+            code (int): Exception error code.
+        """
         self.msg = msg
         self.code = code
 
@@ -195,9 +105,8 @@ class TrainsProblem:
         """
         Creates an empty graph.
 
-        Params:
+        Attributes:
             _graph (dict): A nested dict containing a graph representation.
-
         """
         self._graph = {}
 
@@ -215,8 +124,7 @@ class TrainsProblem:
         ...  'E': {'B': 3}
         ... }
         >>> tp = TrainsProblem()
-        >>> tp.create_graph_from_string('AB5, BC4, CD8, DC8, DE6,\
-                                         AD5, CE2, EB3, AE7')
+        >>> tp.create_graph_from_string('AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7')
         >>> tp._graph
         {'A': {'B': 5, 'E': 7, 'D': 5}, 'C': {'E': 2, 'D': 8}, 'B': {'C': 4}, 'E': {'B': 3}, 'D': {'C': 8, 'E': 6}}
         """
@@ -558,8 +466,27 @@ class TrainsProblem:
             raise NoRoute('No route from {} to {}'.format(start, end), 2)
 
 
-def main():
-    def path_distance_error_handler(trains, path):
+class App:
+    """
+    App class.
+
+    Implements the main App class for the solution of the problem proposed by
+    Thoughtworks.
+
+    Attributes:
+        trains (TrainsProblem): The instance of the solution class
+    """
+
+    def __init__(self):
+        """
+        Creates an empty app.
+
+        Attributes:
+            trains (TrainsProblem): The instance of the solution class
+        """
+        self._trains = TrainsProblem()
+
+    def path_distance_error_handler(self, path):
         """
         Handle user messages when calculating distances on a path.
         I personally do not like mixing user messages within a library or a
@@ -573,12 +500,12 @@ def main():
             The path distance or 'NO SUCH ROUTE' if an exception occurs.
         """
         try:
-            path = trains.path_distance(path)
+            path = self._trains.path_distance(path)
         except:
             path = 'NO SUCH ROUTE'
         return path
 
-    def shortest_path_error_handler(trains, start, end):
+    def shortest_path_error_handler(self, start, end):
         """
         Handle user messages when calculating the shortest path between two
         vertices
@@ -592,12 +519,12 @@ def main():
             The shortest path or 'NO SUCH ROUTE' if an exception occurs.
         """
         try:
-            _, result = trains.shortest_path(start, end)
+            _, result = self._trains.shortest_path(start, end)
         except:
             result = 'NO SUCH ROUTE'
         return result
 
-    def read_input(filename):
+    def read_input(self, filename):
         """
         Handle user messages when calculating the shortest path between two
         vertices
@@ -617,44 +544,53 @@ def main():
             print('Problem reading input, check that input.txt exists\
                    and it is formated correctly as the problem description')
 
-    input_string = read_input('input.txt')
-    trains = TrainsProblem()
-    trains.create_graph_from_string(input_string)
+    def run(self):
+        """
+        App runner (main program)
+        """
+        input_string = self.read_input('input.txt')
+        self._trains.create_graph_from_string(input_string)
 
-    path = path_distance_error_handler(trains, ['A', 'B', 'C'])
-    print('Output #1: {}'.format(path))
+        path = self.path_distance_error_handler(['A', 'B', 'C'])
+        print('Output #1: {}'.format(path))
 
-    path = path_distance_error_handler(trains, ['A', 'D'])
-    print('Output #2: {}'.format(path))
+        path = self.path_distance_error_handler(['A', 'D'])
+        print('Output #2: {}'.format(path))
 
-    path = path_distance_error_handler(trains, ['A', 'D', 'C'])
-    print('Output #3: {}'.format(path))
+        path = self.path_distance_error_handler(['A', 'D', 'C'])
+        print('Output #3: {}'.format(path))
 
-    path = path_distance_error_handler(trains, ['A', 'E', 'B', 'C', 'D'])
-    print('Output #4: {}'.format(path))
+        path = self.path_distance_error_handler(['A', 'E', 'B', 'C', 'D'])
+        print('Output #4: {}'.format(path))
 
-    path = path_distance_error_handler(trains, ['A', 'E', 'D'])
-    print('Output #5: {}'.format(path))
+        path = self.path_distance_error_handler(['A', 'E', 'D'])
+        print('Output #5: {}'.format(path))
 
-    count = trains.paths_number_by_maximum_stops('C', 'C', 3)
-    print('Output #6: {}'.format(count))
+        count = self._trains.paths_number_by_maximum_stops('C', 'C', 3)
+        print('Output #6: {}'.format(count))
 
-    count = trains.paths_number_by_exact_stops('A', 'C', 4)
-    print('Output #7: {}'.format(count))
+        count = self._trains.paths_number_by_exact_stops('A', 'C', 4)
+        print('Output #7: {}'.format(count))
 
-    result = shortest_path_error_handler(trains, 'A', 'C')
-    print('Output #8: {}'.format(result))
+        result = self.shortest_path_error_handler('A', 'C')
+        print('Output #8: {}'.format(result))
 
-    result = shortest_path_error_handler(trains, 'B', 'B')
-    print('Output #9: {}'.format(result))
+        result = self.shortest_path_error_handler('B', 'B')
+        print('Output #9: {}'.format(result))
 
-    iterations = 50
-    count = trains.paths_number_by_maximum_distance('C', 'C', 30, iterations)
-    print('Output #10: {}'.format(count))
+        iterations = 50
+        count = self._trains.paths_number_by_maximum_distance('C', 'C', 30,
+                                                              iterations)
+        print('Output #10: {}'.format(count))
+
+
+def main():
+    import doctest
+    doctest.testmod()
+    app = App()
+    app.run()
 
 if __name__ == "__main__":
-    #import doctest
-    #doctest.testmod()
     main()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4 spelllang=en_us :

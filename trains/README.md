@@ -81,10 +81,11 @@ Output #10: 7
   "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7" can be represented as follows:
 ```python
 graph = {'a': {'b': 5, 'd': 5, 'e': 7},
-         'b': {'c': 4},
-         'c': {'d': 8, 'e': 2},
-         'd': {'c': 8, 'e': 6},
-         'e': {'b': 3}
+           'b': {'c': 4},
+           'c': {'d': 8, 'e': 2},
+           'd': {'c': 8, 'e': 6},
+           'e': {'b': 3}
+        }
 ```
 - I performed a search using a Breadth-First Search (BFS)  algorithm [1]
   packed within an iterator yielding a path at a time.
@@ -103,7 +104,11 @@ graph = {'a': {'b': 5, 'd': 5, 'e': 7},
 - I thought of using properties for the classes but it didn't look worthing of
   doing it for this example.
 - I modeled the problem as one class: TrainsProblem. Each method has its own
-  docstring documenting it
+  docstring documenting it. An html folder accompanies the deliverable with the
+  full documentation.
+- I modeled the main program as one class: App. Each method has its own
+  docstring documenting it as well. The documentation can be found also in the
+  html folder.
 - Each method is documented using docstrings (which are also testable). You can
   use introspection to get the documentation, to do so, using python or ipython
   console type:
@@ -111,10 +116,14 @@ graph = {'a': {'b': 5, 'd': 5, 'e': 7},
 import trains
 help(trains)
 ```
+- The API is documented using epydoc (see html folder for details)
 - The program contains one exception class: NoRoute raised whenever the "NO SUCH
   ROUTE" should appear, a wrapper on top of this shows the error string on
   user's code.
-- The program contains one class: TrainsProblem
+- Tests coverage is 99% (see htmlcov folder for details)
+- Documentation coverage is 95.5% on file trains.py (module docstring missing)
+- Documentation coverage is 96.2% on file test_trains.py (module docstring
+  missing)
 
 
 ## Assumptions:
@@ -140,14 +149,31 @@ help(trains)
 - This is made in python2 and it should run in python2, I haven't tested it out
   on python3.
 - I thought about adding Sphinx documentation but I thought it was overkilling.
-  Having docstrings for the size of this project is enough.
+  Having docstrings for the size of this project is enough. However I documented
+  the program with epydoc. Note that epydoc is not shipped within the
+  requirements.txt file, if the documentation needs to be updated consider
+  including it. To update the documentation use:
+```sh
+epydoc trains.py test_trains.py
+```
 
 
 ## Code checkups:
 - PEP8 compliant (except for some one-line docstrings outputs)
-- Doctest passing
-- Pytest passing (unit + functional tests)
-
+- Doctest passing with 95.5% and 96.2% coverage for trains.py and test_trains.py
+  respectively.
+  - To check the coverage install via pip the ``docstring-coverage`` package and
+    run the test with:
+```sh
+docstring-coverage trains.py
+docstring-coverage test_trains.py
+```
+- Pytest passing with 99% including unit and functional tests.
+  - To check the coverage install via pip the ``pytest-cov`` package and run the
+    test with:
+```sh
+py.test --cov trains.py
+```
 
 ## How to prepare the environment (pre-requisite to run the code).
 
