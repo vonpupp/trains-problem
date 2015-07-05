@@ -482,18 +482,18 @@ class App:
         Creates an empty app.
 
         Attributes:
-            trains (TrainsProblem): The instance of the solution class
+            _trains (TrainsProblem): A TrainsProblem instance
         """
         self._trains = TrainsProblem()
 
     def path_distance_error_handler(self, path):
         """
-        Handle user messages when calculating distances on a path.
-        I personally do not like mixing user messages within a library or a
-        class. That should be a responsibility of the main code
+        Facade for path_distance method handling error messages when when
+        calculating distances on a path.  I personally do not like mixing user
+        messages within a library or a class. That should be a responsibility of
+        the main code
 
         Params:
-            trains (TrainsProblem): The TrainsProblem object
             path (list): The list of vertices
 
         Returns:
@@ -507,11 +507,10 @@ class App:
 
     def shortest_path_error_handler(self, start, end):
         """
-        Handle user messages when calculating the shortest path between two
-        vertices
+        Facade for shortest_path method handling error messages when
+        calculating the shortest path between two vertices
 
         Params:
-            trains (TrainsProblem): The TrainsProblem object
             start (str): The starting vertex
             end (str): The ending vertex
 
@@ -526,8 +525,8 @@ class App:
 
     def read_input(self, filename):
         """
-        Handle user messages when calculating the shortest path between two
-        vertices
+        Reads the first line of a file given by filename and returns it. If
+        something goes wrong it prints a message to the user.
 
         Params:
             filename (str): The filename of the input file
