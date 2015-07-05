@@ -102,7 +102,8 @@ graph = {'a': {'b': 5, 'd': 5, 'e': 7},
   to meet a good balance of error handling.
 - I thought of using properties for the classes but it didn't look worthing of
   doing it for this example.
-- I implemented mainly
+- I modeled the problem as one class: TrainsProblem. Each method has its own
+  docstring documenting it
 - Each method is documented using docstrings (which are also testable). You can
   use introspection to get the documentation, to do so, using python or ipython
   console type:
@@ -120,7 +121,7 @@ help(trains)
 - I used the Queue and heapq modules. I don't think this break the rules
   since is part of the standard python library. By external libs I understand
   pip libs.
-  I priorized readability over efficiency since time/efficiency is not a
+  I prioritized readability over efficiency since time/efficiency is not a
   constraint of the problem. Performance improvements can be done to this code.
 - Since the graph has loops to implement the last type of feature the
   algorithm could enter a loop as in fact happens when not limited to a
@@ -138,6 +139,8 @@ help(trains)
   pytest more pythonic.
 - This is made in python2 and it should run in python2, I haven't tested it out
   on python3.
+- I thought about adding Sphinx documentation but I thought it was overkilling.
+  Having docstrings for the size of this project is enough.
 
 
 ## Code checkups:

@@ -16,7 +16,7 @@ class TestTrains():
                       'E': {'B': 3}
                       }
         self.tp = trains.TrainsProblem()
-        self.tp.graph = self.graph
+        self.tp._graph = self.graph
 
     # Unit tests
 
@@ -30,7 +30,7 @@ class TestTrains():
         tp = trains.TrainsProblem()
         tp.create_graph_from_string('AB5, BC4, CD8, DC8, DE6,\
                                      AD5, CE2, EB3, AE7')
-        assert g == tp.graph
+        assert g == tp._graph
 
     def test_doctest(self):
         # TODO: Perform doctesting within py.test
@@ -93,7 +93,7 @@ class TestTrains():
         assert len(paths) == 7
 
 # Functional tests
-# Note this is not within the class since is a fixture
+# Note this is not within the class since it is a fixture
 
 @pytest.mark.parametrize(("filename_expected", "function_to_test"), [
     ("expected_output.txt", trains.main)
