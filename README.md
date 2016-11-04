@@ -185,10 +185,6 @@ python2 binary.
 ```sh
 unzip trains.zip
 ```
-- Change directory
-```sh
-cd trains
-```
 - Create the environment:
 ```sh
 virtualenv2 .env
