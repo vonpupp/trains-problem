@@ -1,7 +1,7 @@
 <!--  vim: set spell: -->
 <!--  vim: set spelllang=en_us: -->
 
-# Thoughtworks test solution for problem one: Trains
+# Programming practice: Trains
 
 ## Problem description:
 
@@ -72,9 +72,9 @@ Output #10: 7
 
 ---------------------
 
-# Comments from Albert:
+## My comments:
 
-## Code description:
+### Code description:
 - I represented each city as a vertex of a weighted graph, where the weight is
   the "track" of "one-way" connecting each city.
   For such abstraction I used a dict of dicts. Given the example data:
@@ -126,7 +126,7 @@ help(trains)
   missing)
 
 
-## Assumptions:
+### Assumptions:
 - I used the Queue and heapq modules. I don't think this break the rules
   since is part of the standard python library. By external libs I understand
   pip libs.
@@ -158,7 +158,7 @@ epydoc trains.py test_trains.py
 ```
 
 
-## Code checkups:
+### Code checkups:
 - PEP8 compliant (except for some one-line docstrings outputs)
 - Doctest passing with 95.5% and 96.2% coverage for trains.py and test_trains.py
   respectively.
@@ -175,7 +175,7 @@ docstring-coverage test_trains.py
 py.test --cov trains.py
 ```
 
-## How to prepare the environment (pre-requisite to run the code).
+### How to prepare the environment (pre-requisite to run the code).
 
 Depending on your distro you may use virtualenv instead of virtualenv2 and pip
 instead of pip2 binaries. I assume Arch Linux which is the distro I'm using and
@@ -202,7 +202,7 @@ source .env/bin/activate
 pip2 install -r requirements.txt
 ```
 
-## How to run this code:
+### How to run this code:
 - Edit the input.txt file and write a valid graph. Example:
 ```
   AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7
@@ -222,7 +222,7 @@ source .env/bin/activate
 ./trains.py | tee output.txt
 ```
 
-## How to run the tests:
+### How to run the tests:
 - To test the code using py.test:
 ```sh
 ./test_trains.py

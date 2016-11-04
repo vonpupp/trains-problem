@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-"""Thoughtworks results for problem one: Trains
+"""Practice: Trains
 
 Problem description:
 
@@ -95,7 +95,7 @@ class TrainsProblem:
     """
     TrainsProblem class.
 
-    Implements the solution of the problem proposed by Thoughtworks.
+    Implements the solution of the Trains problem.
 
     Attributes:
         _graph (dict): A nested dict containing a graph representation.
@@ -470,8 +470,7 @@ class App:
     """
     App class.
 
-    Implements the main App class for the solution of the problem proposed by
-    Thoughtworks.
+    Implements the main App class for the solution of the Trains problem.
 
     Attributes:
         trains (TrainsProblem): The instance of the solution class
