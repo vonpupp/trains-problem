@@ -5,7 +5,7 @@ build:
     tests:
         override:
             -
-                command: 'py.test --cov trains'
+                command: 'py.test --cov trains.py'
                 coverage:
                     file: '.coverage'
                     config_file: '.coveragerc'
