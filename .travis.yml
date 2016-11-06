@@ -12,8 +12,9 @@ install:
   - pip install python-coveralls
 
 script:
-  - py.test
+  - py.test --cov trains.py
+  #- python -m pytest ${TRAVIS_BUILD_DIR}/tests --cov=${TRAVIS_BUILD_DIR}/tablebuilder
 
 after_success:
+  - "bash <(curl -s https://codecov.io/bash)"
   - coveralls
-
