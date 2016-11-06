@@ -3,6 +3,30 @@
 
 # Programming practice: Trains
 
+## Metrics
+
+Build Status (master branch):
+[![Travis-CI](https://img.shields.io/travis/vonpupp/trains-problem.svg)](https://travis-ci.org/vonpupp/trains-problem)
+
+Code Quality (master branch):
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/vonpupp/trains-problem.svg)](https://scrutinizer-ci.com/g/vonpupp/trains-problem/)
+
+Code Coverage (master branch):
+[![Scrutinizer
+Coverage](https://img.shields.io/scrutinizer/coverage/g/vonpupp/trains-problem.svg)](https://scrutinizer-ci.com/g/vonpupp/trains-problem/)
+
+Ready Stories: [![Stories in
+Ready](https://badge.waffle.io/vonpupp/trains-problem.png?label=ready&title=Ready)](http://waffle.io/vonpupp/trains-problem)
+
+Stories in Progress: [![Stories in
+progress](https://badge.waffle.io/vonpupp/trains-problem.png?label=progress&title=Progress)](http://waffle.io/vonpupp/trains-problem)
+
+[![Throughput
+Graph](https://graphs.waffle.io/vonpupp/trains-problem/throughput.svg)](https://waffle.io/vonpupp/trains-problem/metrics)
+
+Throughput Graph
+
+
 ## Problem description:
 
 The local commuter railroad services a number of towns in Kiwiland.  Because of
