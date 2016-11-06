@@ -4,3 +4,4 @@ py==1.4.31
 pytest==2.7.2
 pytest-cov==2.4.0
 jsonschema
+mock
