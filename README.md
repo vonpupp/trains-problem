@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/vonpupp/trains-problem.png?label=ready&title=Ready)](https://waffle.io/vonpupp/trains-problem)
 <!--  vim: set spell: -->
 <!--  vim: set spelllang=en_us: -->
 
