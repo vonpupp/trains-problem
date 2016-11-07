@@ -12,8 +12,7 @@ Code Quality (master branch):
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/vonpupp/trains-problem.svg)](https://scrutinizer-ci.com/g/vonpupp/trains-problem/)
 
 Code Coverage (master branch):
-[![Scrutinizer
-Coverage](https://img.shields.io/scrutinizer/coverage/g/vonpupp/trains-problem.svg)](https://scrutinizer-ci.com/g/vonpupp/trains-problem/)
+[![Codecov](https://img.shields.io/codecov/c/github/vonpupp/trains-problem/master.svg)](https://codecov.io/gh/vonpupp/trains-problem)
 
 Ready Stories: [![Stories in
 Ready](https://badge.waffle.io/vonpupp/trains-problem.png?label=ready&title=Ready)](http://waffle.io/vonpupp/trains-problem)
